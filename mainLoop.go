@@ -32,6 +32,7 @@ func (this *mainLoop) run() {
 }
 
 func (this *mainLoop) update() {
+	this.player.Update()
 }
 
 func (this *mainLoop) processEvents() {
