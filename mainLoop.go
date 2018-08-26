@@ -3,13 +3,13 @@ package main
 import "github.com/veandco/go-sdl2/sdl"
 import "errors"
 
-type MainLoop struct{
+type mainLoop struct{
 	running bool;
 	window *sdl.Window;
 	renderer *sdl.Renderer;
 }
 
-func (this *MainLoop) exit() {
+func (this *mainLoop) exit() {
 	sdl.Quit();
 	if this.window != nil{
 		this.window.Destroy();
@@ -19,7 +19,7 @@ func (this *MainLoop) exit() {
 	}
 }
 
-func (this *MainLoop) run() {
+func (this *mainLoop) run() {
 	this.running = true;
 	for this.running {
 		this.processEvents();
@@ -28,10 +28,10 @@ func (this *MainLoop) run() {
 	}
 }
 
-func (this *MainLoop) update() {
+func (this *mainLoop) update() {
 }
 
-func (this *MainLoop) processEvents() {
+func (this *mainLoop) processEvents() {
 	for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
 		switch event.(type) {
 		case *sdl.QuitEvent:
@@ -42,7 +42,7 @@ func (this *MainLoop) processEvents() {
 	}
 }
 
-func (this *MainLoop) render() {
+func (this *mainLoop) render() {
 	this.renderer.SetDrawColor(0, 0, 0, 255);
 	this.renderer.Clear();
 
@@ -53,7 +53,7 @@ func (this *MainLoop) render() {
 }
 
 
-func NewMainLoop() (*MainLoop, error) {
+func NewMainLoop() (*mainLoop, error) {
 	if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
 		return nil, errors.New("Cannot init SDL2");
 	}
@@ -67,7 +67,7 @@ func NewMainLoop() (*MainLoop, error) {
 		return nil, errors.New("Cannot create sdl2 renderer");
 	}
 
-	mainLoop := MainLoop{true, window, renderer};
+	mainLoop := mainLoop{true, window, renderer};
 
 	return &mainLoop, nil;
 }

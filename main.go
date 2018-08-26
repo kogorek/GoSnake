@@ -3,7 +3,6 @@ package main
 import "os"
 import "fmt"
 
-
 func main() {
 	app, err := NewMainLoop();
 	if err != nil {
