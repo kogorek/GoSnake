@@ -1,8 +1,9 @@
 package main
 
 import "github.com/veandco/go-sdl2/sdl"
+import "github.com/EngoEngine/glm"
 import "errors"
-import "fmt"
+// import "fmt"
 
 type mainLoop struct{
 	running bool
@@ -47,7 +48,6 @@ func (this *mainLoop) processEvents() {
 }
 
 func (this *mainLoop) processKeyboardEvent(event *sdl.KeyboardEvent) {
-fmt.Println(event.Keysym.Scancode == sdl.SCANCODE_W)
 	switch event.Keysym.Scancode{
 		case sdl.SCANCODE_W:
 			this.player.MoveUp()
@@ -71,9 +71,13 @@ func (this *mainLoop) render() {
 	this.renderer.SetDrawColor(0, 0, 0, 255)
 	this.renderer.Clear()
 
-	this.renderer.SetDrawColor(255, 0, 0, 255)
-	this.renderer.DrawLine(0,0,100,100)
-
+	this.renderer.SetDrawColor(60, 168, 0, 255)
+	var bodyparts = this.player.bodyparts
+	for i := bodyparts.Front(); i != nil; i = i.Next() {
+		var part = i.Value.(glm.Vec2)
+		var rect = sdl.Rect{int32(part.X()), int32(part.Y()), 10, 10}
+		this.renderer.DrawRect(&rect)
+	}
 	this.renderer.Present()
 }
 
