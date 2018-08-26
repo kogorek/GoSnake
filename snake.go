@@ -56,11 +56,11 @@ func (this *snake) collisionWithPoint(point glm.Vec2) bool {
 	return false
 }
 
-func NewSnake() snake {
+func NewSnake() *snake {
 	var bodyparts = list.New()
 	var direction = glm.Vec2{0.0, 0.0}
 	var head = glm.Vec2{10.0, 10.0}
 	bodyparts.PushBack(head)
 
-	return snake{bodyparts, direction}
+	return &snake{bodyparts, direction}
 }

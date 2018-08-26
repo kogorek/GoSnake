@@ -8,6 +8,7 @@ type mainLoop struct{
 	running bool
 	window *sdl.Window
 	renderer *sdl.Renderer
+	player *snake
 }
 
 func (this *mainLoop) exit() {
@@ -46,9 +47,24 @@ func (this *mainLoop) processEvents() {
 }
 
 func (this *mainLoop) processKeyboardEvent(event *sdl.KeyboardEvent) {
+fmt.Println(event.Keysym.Scancode == sdl.SCANCODE_W)
+	switch event.Keysym.Scancode{
+		case sdl.SCANCODE_W:
+			this.player.MoveUp()
+			break
 
-	fmt.Printf("[%d ms] Keyboard\ttype:%d\tsym:%c\tmodifiers:%d\tstate:%d\trepeat:%d\n",
-					event.Timestamp, event.Type, event.Keysym.Sym, event.Keysym.Mod, event.State, event.Repeat)
+		case sdl.SCANCODE_S:
+			this.player.MoveDown()
+			break
+
+		case sdl.SCANCODE_A:
+			this.player.MoveLeft()
+			break
+
+		case sdl.SCANCODE_D:
+			this.player.MoveRight()
+			break
+	}
 }
 
 func (this *mainLoop) render() {
@@ -76,7 +92,9 @@ func NewMainLoop() (*mainLoop, error) {
 		return nil, errors.New("Cannot create sdl2 renderer")
 	}
 
-	mainLoop := mainLoop{true, window, renderer}
+	player := NewSnake()
+
+	mainLoop := mainLoop{true, window, renderer, player}
 
 	return &mainLoop, nil
 }
