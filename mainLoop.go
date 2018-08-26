@@ -76,7 +76,7 @@ func (this *mainLoop) render() {
 	var bodyparts = this.player.bodyparts
 	for i := bodyparts.Front(); i != nil; i = i.Next() {
 		var part = i.Value.(glm.Vec2)
-		var rect = sdl.Rect{int32(part.X()), int32(part.Y()), 10, 10}
+		var rect = sdl.Rect{int32(part.X())*10, int32(part.Y())*10, 10, 10}
 		this.renderer.DrawRect(&rect)
 	}
 	this.renderer.Present()
@@ -98,6 +98,15 @@ func NewMainLoop() (*mainLoop, error) {
 	}
 
 	player := NewSnake()
+	player.AddBodypart()
+	player.AddBodypart()
+	player.AddBodypart()
+	player.AddBodypart()
+	player.AddBodypart()
+	player.AddBodypart()
+	player.AddBodypart()
+	player.AddBodypart()
+
 
 	mainLoop := mainLoop{true, window, renderer, player}
 

@@ -26,7 +26,7 @@ func (this *snake) MoveRight() {
 }
 
 func (this *snake) AddBodypart() {
-	var lastBodypart = this.bodyparts.Back()
+	var lastBodypart = this.bodyparts.Back().Value.(glm.Vec2)
 	var newBodypart = lastBodypart
 	this.bodyparts.PushBack(newBodypart)
 }
@@ -75,5 +75,5 @@ func NewSnake() *snake {
 	var head = glm.Vec2{20.0, 20.0}
 	bodyparts.PushBack(head)
 
-	return &snake{bodyparts, direction, 0.01}
+	return &snake{bodyparts, direction, 0.001}
 }
