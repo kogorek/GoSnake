@@ -30,6 +30,32 @@ func (this *snake) AddBodypart() {
 	this.bodyparts.PushBack(newBodypart)
 }
 
+func (this *snake) checkSelfCollision() bool {
+	for i := this.bodyparts.Front(); i != nil; i = i.Next() {
+		for j := this.bodyparts.Front(); j != nil; j = j.Next() {
+			if &i == &j{
+				continue
+			}
+			first := i.Value.(glm.Vec2)
+			second := j.Value.(glm.Vec2)
+
+			if first.Equal(&second){
+				return true
+			}
+			
+		}
+	}
+	return false
+}
+
+func (this *snake) collisionWithPoint(point glm.Vec2) bool {
+	var head = this.bodyparts.Front().Value.(glm.Vec2)
+	if head.Equal(&point) {
+		return true
+	}
+	return false
+}
+
 func NewSnake() snake {
 	var bodyparts = list.New()
 	var direction = glm.Vec2{0.0, 0.0}

@@ -46,6 +46,7 @@ func (this *mainLoop) processEvents() {
 }
 
 func (this *mainLoop) processKeyboardEvent(event *sdl.KeyboardEvent) {
+
 	fmt.Printf("[%d ms] Keyboard\ttype:%d\tsym:%c\tmodifiers:%d\tstate:%d\trepeat:%d\n",
 					event.Timestamp, event.Type, event.Keysym.Sym, event.Keysym.Mod, event.State, event.Repeat)
 }
