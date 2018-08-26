@@ -26,8 +26,9 @@ func (this *MainLoop) exit() {
 func (this *MainLoop) run() {
 	this.running = true;
 	for this.running {
+		this.processEvents();
 		this.update();
-		this.draw();
+		this.render();
 	}
 }
 
@@ -42,11 +43,24 @@ func (this *MainLoop) update() {
 	}
 }
 
+func (this *MainLoop) processEvents() {
+	for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
+		switch event.(type) {
+		case *sdl.QuitEvent:
+			println("Quit")
+			running = false
+			break
+		}
+	}
+}
+
 func (this *MainLoop) render() {
 	this.renderer.SetDrawColor(0, 0, 0, 255);
 	this.renderer.Clear();
+
 	this.renderer.SetDrawColor(255, 0, 0, 255);
 	this.renderer.DrawLine(0,0,100,100);
+
 	this.renderer.Present();
 }
 
