@@ -6,27 +6,27 @@ type snake struct {
 	bodyparts []glm.Vec2
 	direction glm.Vec2
 	speed float32
+	moveTimer float32
 }
 
 func (this *snake) MoveUp() {
-	this.direction = glm.Vec2{0.0, -this.speed}
+	this.direction = glm.Vec2{0.0, -1.0}
 }
 
 func (this *snake) MoveDown() {
-	this.direction = glm.Vec2{0.0, this.speed}
+	this.direction = glm.Vec2{0.0, 1.0}
 }
 
 func (this *snake) MoveLeft() {
-	this.direction = glm.Vec2{-this.speed, 0.0}
+	this.direction = glm.Vec2{-1.0, 0.0}
 }
 
 func (this *snake) MoveRight() {
-	this.direction = glm.Vec2{this.speed, 0.0}
+	this.direction = glm.Vec2{1.0, 0.0}
 }
 
 func (this *snake) AddBodypart() {
-	var totalBodyParts int = len(this.bodyparts)
-	var lastBodypart = this.bodyparts[totalBodyParts-1]
+	var lastBodypart = this.bodyparts[0]
 	var newBodypart glm.Vec2 = lastBodypart
 	this.bodyparts = append(this.bodyparts, newBodypart)
 }
@@ -55,18 +55,25 @@ func (this *snake) collisionWithPoint(point glm.Vec2) bool {
 }
 
 func (this *snake) Update() {
-	var totalBodyParts int = len(this.bodyparts)
-	for i := 0; i < totalBodyParts-1; i++ {
-		this.bodyparts[i] = this.bodyparts[i+1]
+
+	if this.moveTimer >= 1 {
+		var totalBodyParts int = len(this.bodyparts)
+		this.bodyparts[totalBodyParts-1].AddWith(&this.direction)
+		this.moveTimer = 0.0
+
+		for i := 0; i < totalBodyParts-1; i++ {
+			this.bodyparts[i] = this.bodyparts[i+1]
+		}
 	}
-	this.bodyparts[totalBodyParts-1].AddWith(&this.direction)
+
+	this.moveTimer += this.speed
 }
 
-func NewSnake() *snake {
+func NewSnake(position glm.Vec2) *snake {
 	var bodyparts = make([]glm.Vec2, 0)
 	var direction = glm.Vec2{0.0, 0.0}
-	var head = glm.Vec2{20.0, 20.0}
+	var head = position
 	bodyparts = append(bodyparts, head)
 
-	return &snake{bodyparts, direction, 0.001}
+	return &snake{bodyparts, direction, 0.001, 0.0}
 }

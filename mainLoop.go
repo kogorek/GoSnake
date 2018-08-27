@@ -1,7 +1,7 @@
 package main
 
 import "github.com/veandco/go-sdl2/sdl"
-// import "github.com/EngoEngine/glm"
+import "github.com/EngoEngine/glm"
 import "errors"
 // import "fmt"
 
@@ -33,6 +33,9 @@ func (this *mainLoop) run() {
 
 func (this *mainLoop) update() {
 	this.player.Update()
+	if this.player.checkSelfCollision() {
+		println("FFF")
+	}
 }
 
 func (this *mainLoop) processEvents() {
@@ -74,7 +77,7 @@ func (this *mainLoop) render() {
 
 	this.renderer.SetDrawColor(60, 168, 0, 255)
 	for _, part := range this.player.bodyparts {
-		var rect = sdl.Rect{int32(part.X())*10, int32(part.Y())*10, 10, 10}
+		var rect = sdl.Rect{int32(part.X())*30, int32(part.Y())*30, 30, 30}
 		this.renderer.DrawRect(&rect)
 	}
 	this.renderer.Present()
@@ -84,7 +87,7 @@ func NewMainLoop() (*mainLoop, error) {
 	if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
 		return nil, errors.New("Cannot init SDL2")
 	}
-	window, err := sdl.CreateWindow("test", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
+	window, err := sdl.CreateWindow("Frekin' snake!", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
 	800, 600, sdl.WINDOW_SHOWN)
 	if err != nil {
 		return nil, errors.New("Cannot create sdl2 window")
@@ -94,17 +97,11 @@ func NewMainLoop() (*mainLoop, error) {
 		return nil, errors.New("Cannot create sdl2 renderer")
 	}
 
-	player := NewSnake()
-	player.AddBodypart()
-	player.AddBodypart()
-	player.AddBodypart()
-	player.AddBodypart()
-	player.AddBodypart()
-	player.AddBodypart()
-	player.AddBodypart()
-	player.AddBodypart()
-
-
+	player := NewSnake(glm.Vec2{2, 2})
+	for i := 0; i < 3; i++{
+		player.AddBodypart()
+		
+	}
 	mainLoop := mainLoop{true, window, renderer, player}
 
 	return &mainLoop, nil
