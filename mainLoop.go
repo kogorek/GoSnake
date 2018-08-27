@@ -2,6 +2,8 @@ package main
 
 import "github.com/veandco/go-sdl2/sdl"
 import "github.com/EngoEngine/glm"
+import "math/rand"
+import "math"
 import "errors"
 // import "fmt"
 
@@ -100,15 +102,17 @@ func (this *mainLoop) render() {
 
 func (this *mainLoop) spawnFood() {
 	if this.foodCount > len(this.food){
-		this.food = append(this.food, glm.Vec2{2.0, 2.0})
+		var x float32 = math.Floor(rand.Float32()*this.fieldSize.X())
+		var y float32 = math.Floor(rand.Float32()*this.fieldSize.Y())
+		this.food = append(this.food, glm.Vec2{x, y})
 	}
 }
 
 func (this *mainLoop) foodColision() {
 	for i := 0; i < len(this.food); i++ {
-		println(i)
 		if this.player.checkPointCollision(this.food[i]) {
 			this.player.AddBodypart()
+			this.food = append(this.food[:i], this.food[i+1:]...)
 		}
 	}
 }
