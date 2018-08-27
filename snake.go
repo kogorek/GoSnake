@@ -28,18 +28,17 @@ func (this *snake) MoveRight() {
 func (this *snake) AddBodypart() {
 	var lastBodypart = this.bodyparts[0]
 	var newBodypart glm.Vec2 = lastBodypart
-	this.bodyparts = append(this.bodyparts, newBodypart)
+	this.bodyparts = append([]glm.Vec2{newBodypart}, this.bodyparts ...)
 }
 
 func (this *snake) checkSelfCollision() bool {
-	for i, first := range this.bodyparts {
-		for j, second := range this.bodyparts {
-			if(i == j){
-				continue
-			}
-			if first.EqualThreshold(&second, 0.7) {
-				return true
-			}
+	var totalBodyParts int = len(this.bodyparts)
+	var head = this.bodyparts[totalBodyParts-1]
+	for i := 0; i < totalBodyParts-1; i++{
+		println(i)
+		var body glm.Vec2 = this.bodyparts[i]
+		if head.Equal(&body) {
+			return true
 		}
 	}
 	return false
@@ -48,24 +47,24 @@ func (this *snake) checkSelfCollision() bool {
 func (this *snake) collisionWithPoint(point glm.Vec2) bool {
 	var totalBodyParts int = len(this.bodyparts)
 	var head = this.bodyparts[totalBodyParts-1]
-	if head.EqualThreshold(&point, 0.7) {
+	if head.Equal(&point) {
 		return true
 	}
 	return false
 }
 
 func (this *snake) Update() {
-
 	if this.moveTimer >= 1 {
-		var totalBodyParts int = len(this.bodyparts)
-		this.bodyparts[totalBodyParts-1].AddWith(&this.direction)
 		this.moveTimer = 0.0
-
+		var totalBodyParts int = len(this.bodyparts)
 		for i := 0; i < totalBodyParts-1; i++ {
 			this.bodyparts[i] = this.bodyparts[i+1]
 		}
+		this.bodyparts[totalBodyParts-1].AddWith(&this.direction)
 	}
-
+	if this.direction.Equal(&glm.Vec2{0.0, 0.0}){
+		return
+	}
 	this.moveTimer += this.speed
 }
 
@@ -74,6 +73,9 @@ func NewSnake(position glm.Vec2) *snake {
 	var direction = glm.Vec2{0.0, 0.0}
 	var head = position
 	bodyparts = append(bodyparts, head)
+	var body = head
+	body.AddWith(&glm.Vec2{0.0, -1.0})
+	bodyparts = append(bodyparts, body)
 
 	return &snake{bodyparts, direction, 0.001, 0.0}
 }

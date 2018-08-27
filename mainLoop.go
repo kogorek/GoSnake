@@ -10,6 +10,8 @@ type mainLoop struct{
 	window *sdl.Window
 	renderer *sdl.Renderer
 	player *snake
+	food []glm.Vec2
+	fieldSize glm.Vec2
 }
 
 func (this *mainLoop) exit() {
@@ -33,8 +35,7 @@ func (this *mainLoop) run() {
 
 func (this *mainLoop) update() {
 	this.player.Update()
-	if this.player.checkSelfCollision() {
-		println("FFF")
+	if this.player.checkSelfCollision(){
 	}
 }
 
@@ -68,6 +69,10 @@ func (this *mainLoop) processKeyboardEvent(event *sdl.KeyboardEvent) {
 		case sdl.SCANCODE_D:
 			this.player.MoveRight()
 			break
+
+		case sdl.SCANCODE_Q:
+			this.player.AddBodypart()
+			break
 	}
 }
 
@@ -81,6 +86,10 @@ func (this *mainLoop) render() {
 		this.renderer.DrawRect(&rect)
 	}
 	this.renderer.Present()
+}
+
+func (this *mainLoop) spawnFood() {
+
 }
 
 func NewMainLoop() (*mainLoop, error) {
@@ -98,11 +107,9 @@ func NewMainLoop() (*mainLoop, error) {
 	}
 
 	player := NewSnake(glm.Vec2{2, 2})
-	for i := 0; i < 3; i++{
-		player.AddBodypart()
-		
-	}
-	mainLoop := mainLoop{true, window, renderer, player}
+	var food []glm.Vec2 = make([]glm.Vec2, 0)
+	var fieldSize glm.Vec2 = glm.Vec2{10, 10}
+	mainLoop := mainLoop{true, window, renderer, player, food, fieldSize}
 
 	return &mainLoop, nil
 }
