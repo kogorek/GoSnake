@@ -1,7 +1,7 @@
 package main
 
 import "github.com/veandco/go-sdl2/sdl"
-import "github.com/EngoEngine/glm"
+// import "github.com/EngoEngine/glm"
 import "errors"
 // import "fmt"
 
@@ -73,9 +73,7 @@ func (this *mainLoop) render() {
 	this.renderer.Clear()
 
 	this.renderer.SetDrawColor(60, 168, 0, 255)
-	var bodyparts = this.player.bodyparts
-	for i := bodyparts.Front(); i != nil; i = i.Next() {
-		var part = i.Value.(glm.Vec2)
+	for _, part := range this.player.bodyparts {
 		var rect = sdl.Rect{int32(part.X())*10, int32(part.Y())*10, 10, 10}
 		this.renderer.DrawRect(&rect)
 	}
@@ -105,11 +103,6 @@ func NewMainLoop() (*mainLoop, error) {
 	player.AddBodypart()
 	player.AddBodypart()
 	player.AddBodypart()
-	println(player.bodyparts.Len())
-	for i := player.bodyparts.Back(); i != player.bodyparts.Front(); i = i.Prev() {
-		var part = i.Value.(glm.Vec2)
-		println(&part)
-	}
 
 
 	mainLoop := mainLoop{true, window, renderer, player}

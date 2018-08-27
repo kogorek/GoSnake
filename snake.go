@@ -1,10 +1,9 @@
 package main
 
 import "github.com/EngoEngine/glm"
-import "container/list"
 
 type snake struct {
-	bodyparts *list.List
+	bodyparts []glm.Vec2
 	direction glm.Vec2
 	speed float32
 }
@@ -26,54 +25,48 @@ func (this *snake) MoveRight() {
 }
 
 func (this *snake) AddBodypart() {
-	var lastBodypart = this.bodyparts.Back().Value.(glm.Vec2)
-	newBodypart := glm.Vec2{lastBodypart.X(), lastBodypart.Y()}
-	this.bodyparts.PushBack(newBodypart)
-	println(&newBodypart)
+	var totalBodyParts int = len(this.bodyparts)
+	var lastBodypart = this.bodyparts[totalBodyParts-1]
+	var newBodypart glm.Vec2 = lastBodypart
+	this.bodyparts = append(this.bodyparts, newBodypart)
 }
 
 func (this *snake) checkSelfCollision() bool {
-	for i := this.bodyparts.Front(); i != nil; i = i.Next() {
-		for j := this.bodyparts.Front(); j != nil; j = j.Next() {
-			if &i == &j{
+	for i, first := range this.bodyparts {
+		for j, second := range this.bodyparts {
+			if(i == j){
 				continue
 			}
-			first := i.Value.(glm.Vec2)
-			second := j.Value.(glm.Vec2)
-
-			if first.Equal(&second){
+			if first.EqualThreshold(&second, 0.7) {
 				return true
 			}
-			
 		}
 	}
 	return false
 }
 
 func (this *snake) collisionWithPoint(point glm.Vec2) bool {
-	var head = this.bodyparts.Front().Value.(glm.Vec2)
-	if head.Equal(&point) {
+	var totalBodyParts int = len(this.bodyparts)
+	var head = this.bodyparts[totalBodyParts-1]
+	if head.EqualThreshold(&point, 0.7) {
 		return true
 	}
 	return false
 }
 
 func (this *snake) Update() {
-	for i := this.bodyparts.Back(); i != this.bodyparts.Front(); i = i.Prev() {
-		// var currentPart = i.Value.(glm.Vec2)
-		var nextPart = i.Prev().Value.(glm.Vec2)
-		i.Value = nextPart
+	var totalBodyParts int = len(this.bodyparts)
+	for i := 0; i < totalBodyParts-1; i++ {
+		this.bodyparts[i] = this.bodyparts[i+1]
 	}
-	var head = this.bodyparts.Front().Value.(glm.Vec2)
-	head.AddWith(&this.direction)
-	this.bodyparts.Front().Value = head
+	this.bodyparts[totalBodyParts-1].AddWith(&this.direction)
 }
 
 func NewSnake() *snake {
-	var bodyparts = list.New()
+	var bodyparts = make([]glm.Vec2, 0)
 	var direction = glm.Vec2{0.0, 0.0}
 	var head = glm.Vec2{20.0, 20.0}
-	bodyparts.PushBack(head)
+	bodyparts = append(bodyparts, head)
 
 	return &snake{bodyparts, direction, 0.001}
 }
