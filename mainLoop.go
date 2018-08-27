@@ -11,6 +11,7 @@ type mainLoop struct{
 	renderer *sdl.Renderer
 	player *snake
 	food []glm.Vec2
+	foodCount int
 	fieldSize glm.Vec2
 }
 
@@ -34,8 +35,11 @@ func (this *mainLoop) run() {
 }
 
 func (this *mainLoop) update() {
+	this.spawnFood()
+	this.foodColision()
 	this.player.Update()
 	if this.player.checkSelfCollision(){
+		this.running = false
 	}
 }
 
@@ -85,11 +89,28 @@ func (this *mainLoop) render() {
 		var rect = sdl.Rect{int32(part.X())*30, int32(part.Y())*30, 30, 30}
 		this.renderer.DrawRect(&rect)
 	}
+
+	this.renderer.SetDrawColor(168, 60, 0, 255)
+	for _, part := range this.food {
+		var rect = sdl.Rect{int32(part.X())*30, int32(part.Y())*30, 30, 30}
+		this.renderer.DrawRect(&rect)
+	}
 	this.renderer.Present()
 }
 
 func (this *mainLoop) spawnFood() {
+	if this.foodCount > len(this.food){
+		this.food = append(this.food, glm.Vec2{2.0, 2.0})
+	}
+}
 
+func (this *mainLoop) foodColision() {
+	for i := 0; i < len(this.food); i++ {
+		println(i)
+		if this.player.checkPointCollision(this.food[i]) {
+			this.player.AddBodypart()
+		}
+	}
 }
 
 func NewMainLoop() (*mainLoop, error) {
@@ -108,8 +129,9 @@ func NewMainLoop() (*mainLoop, error) {
 
 	player := NewSnake(glm.Vec2{2, 2})
 	var food []glm.Vec2 = make([]glm.Vec2, 0)
-	var fieldSize glm.Vec2 = glm.Vec2{10, 10}
-	mainLoop := mainLoop{true, window, renderer, player, food, fieldSize}
+	var fieldSize glm.Vec2 = glm.Vec2{10.0, 10.0}
+	var foodCount int = 1
+	mainLoop := mainLoop{true, window, renderer, player, food, foodCount, fieldSize}
 
 	return &mainLoop, nil
 }

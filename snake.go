@@ -35,7 +35,6 @@ func (this *snake) checkSelfCollision() bool {
 	var totalBodyParts int = len(this.bodyparts)
 	var head = this.bodyparts[totalBodyParts-1]
 	for i := 0; i < totalBodyParts-1; i++{
-		println(i)
 		var body glm.Vec2 = this.bodyparts[i]
 		if head.Equal(&body) {
 			return true
@@ -44,7 +43,7 @@ func (this *snake) checkSelfCollision() bool {
 	return false
 }
 
-func (this *snake) collisionWithPoint(point glm.Vec2) bool {
+func (this *snake) checkPointCollision(point glm.Vec2) bool {
 	var totalBodyParts int = len(this.bodyparts)
 	var head = this.bodyparts[totalBodyParts-1]
 	if head.Equal(&point) {
@@ -66,6 +65,11 @@ func (this *snake) Update() {
 		return
 	}
 	this.moveTimer += this.speed
+}
+
+func (this *snake) SetHeadPosition(position glm.Vec2) {
+	var totalBodyParts int = len(this.bodyparts)
+	this.bodyparts[totalBodyParts-1] = position
 }
 
 func NewSnake(position glm.Vec2) *snake {
