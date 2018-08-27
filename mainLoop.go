@@ -82,7 +82,6 @@ func (this *mainLoop) render() {
 	this.renderer.Present()
 }
 
-
 func NewMainLoop() (*mainLoop, error) {
 	if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
 		return nil, errors.New("Cannot init SDL2")
@@ -106,6 +105,11 @@ func NewMainLoop() (*mainLoop, error) {
 	player.AddBodypart()
 	player.AddBodypart()
 	player.AddBodypart()
+	println(player.bodyparts.Len())
+	for i := player.bodyparts.Back(); i != player.bodyparts.Front(); i = i.Prev() {
+		var part = i.Value.(glm.Vec2)
+		println(&part)
+	}
 
 
 	mainLoop := mainLoop{true, window, renderer, player}

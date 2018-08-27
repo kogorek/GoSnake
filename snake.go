@@ -27,8 +27,9 @@ func (this *snake) MoveRight() {
 
 func (this *snake) AddBodypart() {
 	var lastBodypart = this.bodyparts.Back().Value.(glm.Vec2)
-	var newBodypart = lastBodypart
+	newBodypart := glm.Vec2{lastBodypart.X(), lastBodypart.Y()}
 	this.bodyparts.PushBack(newBodypart)
+	println(&newBodypart)
 }
 
 func (this *snake) checkSelfCollision() bool {
@@ -58,15 +59,14 @@ func (this *snake) collisionWithPoint(point glm.Vec2) bool {
 }
 
 func (this *snake) Update() {
-	var head = this.bodyparts.Front().Value.(glm.Vec2)
-	head.AddWith(&this.direction)
-	this.bodyparts.Front().Value = head
-
 	for i := this.bodyparts.Back(); i != this.bodyparts.Front(); i = i.Prev() {
 		// var currentPart = i.Value.(glm.Vec2)
 		var nextPart = i.Prev().Value.(glm.Vec2)
 		i.Value = nextPart
 	}
+	var head = this.bodyparts.Front().Value.(glm.Vec2)
+	head.AddWith(&this.direction)
+	this.bodyparts.Front().Value = head
 }
 
 func NewSnake() *snake {
