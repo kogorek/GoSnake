@@ -3,7 +3,7 @@ package main
 import "github.com/veandco/go-sdl2/sdl"
 import "github.com/EngoEngine/glm"
 import "math/rand"
-import "math"
+// import "math"
 import "errors"
 // import "fmt"
 
@@ -37,11 +37,32 @@ func (this *mainLoop) run() {
 }
 
 func (this *mainLoop) update() {
+	this.wrapPlayField()
 	this.spawnFood()
 	this.foodColision()
 	this.player.Update()
+	this.foodColision()
 	if this.player.checkSelfCollision(){
 		this.running = false
+	}
+}
+
+func (this *mainLoop) wrapPlayField() {
+	var head glm.Vec2 = this.player.GetHead()
+	if head.X() > this.fieldSize.X() {
+		this.player.SetHeadPosition(glm.Vec2{0.0, head.Y()})
+	}
+
+	if head.X() < 0.0 {
+		this.player.SetHeadPosition(glm.Vec2{this.fieldSize.X(), head.Y()})
+	}
+
+	if head.Y() > this.fieldSize.Y() {
+		this.player.SetHeadPosition(glm.Vec2{head.X(), 0.0})
+	}
+
+	if head.Y() < 0.0 {
+		this.player.SetHeadPosition(glm.Vec2{head.X(), this.fieldSize.Y()})
 	}
 }
 
@@ -102,8 +123,8 @@ func (this *mainLoop) render() {
 
 func (this *mainLoop) spawnFood() {
 	if this.foodCount > len(this.food){
-		var x float32 = math.Floor(rand.Float32()*this.fieldSize.X())
-		var y float32 = math.Floor(rand.Float32()*this.fieldSize.Y())
+		var x float32 = glm.Round(rand.Float32()*this.fieldSize.X(), 0)
+		var y float32 = glm.Round(rand.Float32()*this.fieldSize.Y(), 0)
 		this.food = append(this.food, glm.Vec2{x, y})
 	}
 }
@@ -122,7 +143,7 @@ func NewMainLoop() (*mainLoop, error) {
 		return nil, errors.New("Cannot init SDL2")
 	}
 	window, err := sdl.CreateWindow("Frekin' snake!", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-	800, 600, sdl.WINDOW_SHOWN)
+	630, 480, sdl.WINDOW_SHOWN)
 	if err != nil {
 		return nil, errors.New("Cannot create sdl2 window")
 	}
@@ -133,8 +154,8 @@ func NewMainLoop() (*mainLoop, error) {
 
 	player := NewSnake(glm.Vec2{2, 2})
 	var food []glm.Vec2 = make([]glm.Vec2, 0)
-	var fieldSize glm.Vec2 = glm.Vec2{10.0, 10.0}
-	var foodCount int = 1
+	var fieldSize glm.Vec2 = glm.Vec2{20.0, 15.0}
+	var foodCount int = 4
 	mainLoop := mainLoop{true, window, renderer, player, food, foodCount, fieldSize}
 
 	return &mainLoop, nil

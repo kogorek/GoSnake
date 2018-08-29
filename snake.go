@@ -72,6 +72,11 @@ func (this *snake) SetHeadPosition(position glm.Vec2) {
 	this.bodyparts[totalBodyParts-1] = position
 }
 
+func (this *snake) GetHead() glm.Vec2 {
+	var totalBodyParts int = len(this.bodyparts)
+	return this.bodyparts[totalBodyParts-1]
+}
+
 func NewSnake(position glm.Vec2) *snake {
 	var bodyparts = make([]glm.Vec2, 0)
 	var direction = glm.Vec2{0.0, 0.0}
