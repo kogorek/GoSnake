@@ -1,1 +1,3 @@
 Simple snake game using GO, glm and sdl2 libs.
+
+WARNING: The code is dirty. This is first *fully working* program I wrote on Go.
